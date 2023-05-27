@@ -6,15 +6,16 @@ CREATE PROCEDURE sp_FiltrarInvestigadoresDinamico (
 AS
 BEGIN
 	DECLARE @sql nvarchar(max)
-	SET @sql = 'select PrimerApellido, SegundoApellido, Nombre, Identificacion, 
-				CorreoElectronico1 as CorreoPrincipal, EnfasisGradoAcademico as GradoAcademico,
+	SET @sql = 'select PrimerApellido, SegundoApellido, Investigadores.Nombre, Identificacion, 
+				CorreoElectronico1 as CorreoPrincipal, g.Nombre as GradoAcademico,
 				DATEDIFF(year, FechaNacimiento, GETDATE()) as Edad, Sexo 
 				from Investigadores 
+				inner join GradosAcademicos as g on g.Codigo = Investigadores.GradoAcademico
 				where 1=1'
 
 	IF @gradoAcademico IS NOT NULL
 	BEGIN 
-		SET @sql = @sql + ' AND EnfasisGradoAcademico = ''' + @gradoAcademico + ''''
+		SET @sql = @sql + ' AND g.Nombre = ''' + @gradoAcademico + ''''
 	END
 		
     IF @edadDesde IS NOT NULL AND @edadHasta IS NOT NULL
